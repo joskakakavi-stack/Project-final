@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="grid">
+  <form action="/professors" method="post" class="card">
+    <h2>Professeur</h2>
+    <input name="name" placeholder="Nom" required>
+    <input name="email" type="email" placeholder="Email">
+    <fieldset><legend>Indisponibilités</legend>
+      {% for day in days %}<label><input type="checkbox" name="unavailable_days" value="{{ day }}"> {{ day }}</label>{% endfor %}
+    </fieldset>
+    <button>Ajouter</button>
+  </form>
+
+  <form action="/rooms" method="post" class="card">
+    <h2>Salle</h2>
+    <input name="name" placeholder="Nom de la salle" required>
+    <input name="capacity" type="number" min="0" placeholder="Capacité" required>
+    <button>Ajouter</button>
+  </form>
+
+  <form action="/courses" method="post" class="card wide">
+    <h2>Cours déjà affecté par la faculté</h2>
+    <input name="name" placeholder="Nom du cours" required>
+    <input name="credits" type="number" min="1" placeholder="Crédits" required>
+    <input name="total_hours" type="number" min="1" placeholder="Volume horaire" required>
+    <select name="professor_id" required>
+      <option value="">Professeur responsable</option>
+      {% for professor in professors %}<option value="{{ professor.id }}">{{ professor.name }}</option>{% endfor %}
+    </select>
+    <input name="cohorts" placeholder="Promotions, ex: L0,L1" required>
+    <input name="departments" placeholder="Départements, ex: GI,GE" required>
+    <input name="semester" placeholder="Semestre, ex: S1" required>
+    <button>Ajouter le cours</button>
+  </form>
+</section>
+
+<section class="actions">
+  <form action="/generate" method="post"><button class="primary">Générer l'emploi du temps</button></form>
+  <form action="/reset" method="post"><button class="danger">Réinitialiser</button></form>
+</section>
+
+<section class="card"><h2>Données encodées</h2>
+  <h3>Professeurs</h3><ul>{% for p in professors %}<li>{{ p.name }} — indisponible: {{ p.unavailable_days or 'aucun jour' }}</li>{% else %}<li>Aucun professeur.</li>{% endfor %}</ul>
+  <h3>Salles</h3><ul>{% for r in rooms %}<li>{{ r.name }} ({{ r.capacity }} places)</li>{% else %}<li>Aucune salle.</li>{% endfor %}</ul>
+  <h3>Cours</h3><ul>{% for c in courses %}<li>{{ c.name }} — {{ c.credits }} crédits, {{ c.total_hours }}h, {{ c.professor_name }}, {{ c.cohorts }}/{{ c.departments }}, {{ c.semester }}</li>{% else %}<li>Aucun cours.</li>{% endfor %}</ul>
+</section>
+
+<section class="card"><h2>Emploi du temps généré</h2>
+<table><thead><tr><th>Jour</th><th>Heure</th><th>Cours</th><th>Professeur</th><th>Salle</th><th>Promotion/Département</th><th>Crédits</th></tr></thead>
+<tbody>{% for e in schedule %}<tr><td>{{ e.day }}</td><td>{{ e.start_time }}-{{ e.end_time }}</td><td>{{ e.course_name }}</td><td>{{ e.professor_name }}</td><td>{{ e.room_name }}</td><td>{{ e.cohorts }} / {{ e.departments }}</td><td>{{ e.credits }}</td></tr>{% else %}<tr><td colspan="7">Cliquez sur générer après avoir ajouté les données.</td></tr>{% endfor %}</tbody></table>
+</section>
+{% endblock %}

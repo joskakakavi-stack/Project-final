@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Résultat de génération</h2>
+  {% if warnings %}<ul class="warnings">{% for warning in warnings %}<li>{{ warning }}</li>{% endfor %}</ul>{% else %}<p class="success">Emploi du temps généré sans conflit détecté.</p>{% endif %}
+  <a class="button" href="{{ url_for('index') }}">Voir l'emploi du temps</a>
+</section>
+{% endblock %}
