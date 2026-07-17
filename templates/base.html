@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scheduler Maker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Scheduler Maker</h1>
+    <p>Génération automatique d'emplois du temps sans conflits de professeur, salle ou cohorte.</p>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>
